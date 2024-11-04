@@ -3,14 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MasterMind" Height="450" Width="800">
     <Grid>
-        <ComboBox x:Name="ComboBox1" HorizontalAlignment="Left" Margin="43,250,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox x:Name="ComboBox2" HorizontalAlignment="Left" Margin="228,250,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox x:Name="ComboBox3" HorizontalAlignment="Left" Margin="446,250,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox x:Name="ComboBox4" HorizontalAlignment="Left" Margin="633,250,0,0" VerticalAlignment="Top" Width="120" />
-        <Label x:Name="ColorLabel1" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="647,21,61,189" />
-        <Label x:Name="ColorLabel2" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="462,21,250,189" />
-        <Label x:Name="ColorLabel3" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="241,21,465,189" />
-        <Label x:Name="ColorLabel4" Background="White" BorderBrush="Gray" BorderThickness="1" Margin="56,21,650,189" />
-        <Button x:Name="CheckButton" Content="Check code" HorizontalAlignment="Center" Margin="0,336,0,0" VerticalAlignment="Top" Height="52" Width="178"/>
+        <ComboBox x:Name="ComboBox1" HorizontalAlignment="Left" Margin="43,250,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Label x:Name="Label1" Content="" HorizontalAlignment="Left" Margin="43,10,0,0" VerticalAlignment="Top" Width="120" Height="226" />
+
+        <ComboBox x:Name="ComboBox2" HorizontalAlignment="Left" Margin="228,250,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Label x:Name="Label2" Content="" HorizontalAlignment="Left" Margin="228,10,0,0" VerticalAlignment="Top" Width="120" Height="226" />
+
+        <ComboBox x:Name="ComboBox3" HorizontalAlignment="Left" Margin="446,250,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Label x:Name="Label3" Content="" HorizontalAlignment="Left" Margin="446,10,0,0" VerticalAlignment="Top" Width="120" Height="226" />
+
+        <ComboBox x:Name="ComboBox4" HorizontalAlignment="Left" Margin="633,250,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Label x:Name="Label4" Content="" HorizontalAlignment="Left" Margin="633,10,0,0" VerticalAlignment="Top" Width="120" Height="226" />
+        <Button x:Name="CheckCodeButton" Content="check code" HorizontalAlignment="Left" Margin="288,328,0,0" VerticalAlignment="Top" Height="57" Width="152" Click="CheckCodeButton_Click"/>
     </Grid>
 </Window>
