@@ -14,6 +14,7 @@
 
         <ComboBox x:Name="ComboBox4" HorizontalAlignment="Left" Margin="633,250,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
         <Label x:Name="Label4" Content="" HorizontalAlignment="Left" Margin="633,10,0,0" VerticalAlignment="Top" Width="120" Height="226" />
-        <Button x:Name="CheckCodeButton" Content="check code" HorizontalAlignment="Left" Margin="288,328,0,0" VerticalAlignment="Top" Height="57" Width="152" Click="CheckCodeButton_Click"/>
+
+        <Button x:Name="CheckCodeButton" Content="Check Code" HorizontalAlignment="Left" Margin="288,328,0,0" VerticalAlignment="Top" Height="57" Width="152" Click="CheckCodeButton_Click"/>
     </Grid>
 </Window>
