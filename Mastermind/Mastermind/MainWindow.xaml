@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MasterMind" Height="450" Width="800">
     <Grid>
-        <ComboBox x:Name="ComboBox" HorizontalAlignment="Left" Margin="43,250,0,0" VerticalAlignment="Top" Width="120" />
+        <ComboBox x:Name="ComboBox1" HorizontalAlignment="Left" Margin="43,250,0,0" VerticalAlignment="Top" Width="120" />
         <ComboBox x:Name="ComboBox2" HorizontalAlignment="Left" Margin="228,250,0,0" VerticalAlignment="Top" Width="120" />
         <ComboBox x:Name="ComboBox3" HorizontalAlignment="Left" Margin="446,250,0,0" VerticalAlignment="Top" Width="120" />
         <ComboBox x:Name="ComboBox4" HorizontalAlignment="Left" Margin="633,250,0,0" VerticalAlignment="Top" Width="120" />
