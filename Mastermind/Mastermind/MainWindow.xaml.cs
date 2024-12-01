@@ -18,8 +18,7 @@ namespace Mastermind
         private bool isDebugMode = false; // Debugmodus boolean
         private int countdownSeconds = 0; // Houdt de huidige timer-seconden bij
         private const int maxTime = 10; // Maximale tijd (10 seconden)
-      
-       
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +41,7 @@ namespace Mastermind
 
             DebugTextBox.Text = $"Geheime code: {string.Join(", ", Random)}";
             StartCountdown(); // Timer resetten bij het genereren van een nieuwe code
-            UpdateTitle();
+            UpdateTitle(); // Titel bijwerken
         }
 
         private void ComboBoxes()
@@ -105,7 +104,7 @@ namespace Mastermind
 
         private void LoseTurn()
         {
-            MessageBox.Show("Too late mate! Je verliest deze beurt.", "te laat", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Te laat! Je verliest deze beurt.", "Te laat", MessageBoxButton.OK, MessageBoxImage.Warning);
             attempts++;
 
             if (attempts > maxAttempts)
@@ -114,7 +113,7 @@ namespace Mastermind
             }
             else
             {
-                UpdateTitle();
+                UpdateTitle(); // Titel bijwerken na verlies beurt
                 StartCountdown(); // Timer opnieuw starten voor de volgende beurt
             }
         }
@@ -134,7 +133,7 @@ namespace Mastermind
             {
                 attempts++;
                 StartCountdown(); // Timer opnieuw starten
-                UpdateTitle();
+                UpdateTitle(); // Titel bijwerken na de poging
             }
             else
             {
@@ -146,97 +145,52 @@ namespace Mastermind
         {
             List<string> guesses = new List<string> { guess1, guess2, guess3, guess4 };
 
-            ClearBorders();
-
-            bool isCorrect = true;
+            // Voeg feedback toe in de form van een StackPanel van Border objecten
+            StackPanel feedbackPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal, // Horizontaal naast elkaar
+                Margin = new Thickness(5)
+            };
 
             for (int i = 0; i < guesses.Count; i++)
             {
+                Border feedbackBorder = new Border
+                {
+                    Width = 20,
+                    Height = 20,
+                    Margin = new Thickness(5),
+                    BorderBrush = Brushes.Red, // Foute feedbackkleur
+                    BorderThickness = new Thickness(1)
+                };
+
+                // Verwerk de feedback (rood/wit)
                 if (guesses[i] == Random[i])
                 {
-                    GetLabelForIndex(i).BorderBrush = Brushes.DarkRed;
-                    GetLabelForIndex(i).BorderThickness = new Thickness(2);
-                }
-                else if (Random.Contains(guesses[i]))
-                {
-                    GetLabelForIndex(i).BorderBrush = Brushes.Wheat;
-                    GetLabelForIndex(i).BorderThickness = new Thickness(2);
-                    isCorrect = false;
+                    feedbackBorder.Background = (Brush)new BrushConverter().ConvertFromString(guesses[i]);
                 }
                 else
                 {
-                    isCorrect = false;
+                    feedbackBorder.Background = Brushes.White;
                 }
+
+                feedbackPanel.Children.Add(feedbackBorder);
             }
 
-            if (isCorrect)
-            {
-                EndGame(true); // Spel beëindigen als code juist is
-            }
+            PreviousGuessesPanel.Children.Add(feedbackPanel); // Voeg de feedback toe aan het StackPanel
         }
 
-        private void ClearBorders()
+        private void EndGame(bool isWin)
         {
-            Label1.BorderBrush = Brushes.Transparent;
-            Label2.BorderBrush = Brushes.Transparent;
-            Label3.BorderBrush = Brushes.Transparent;
-            Label4.BorderBrush = Brushes.Transparent;
-        }
-
-        private Label GetLabelForIndex(int index)
-        {
-            switch (index)
-            {
-                case 0: return Label1;
-                case 1: return Label2;
-                case 2: return Label3;
-                case 3: return Label4;
-                default: return null;
-            }
+            string message = isWin ? "Gefeliciteerd! Je hebt gewonnen!" : "Helaas, je hebt verloren.";
+            MessageBox.Show(message, "Einde Spel", MessageBoxButton.OK, MessageBoxImage.Information);
+            RandomKleur(); // Nieuwe code genereren voor een nieuw spel
         }
 
         private void UpdateTitle()
         {
-            string solution = string.Join(", ", Random);
-            Title = $"MasterMind - Poging {attempts}/{maxAttempts} | Oplossing: {solution}";
-        }
-
-        private void ToggleDebug()
-        {
-            isDebugMode = !isDebugMode; //  debugmodus aan
-            DebugTextBox.Visibility = isDebugMode ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        private void EndGame(bool hasWon)
-        {
-            StopCountdown(); // Timer stoppen
-
-            if (hasWon)
-            {
-                MessageBox.Show("Gefeliciteerd! Je hebt de code gekraakt!", "Gewonnen", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                string solution = string.Join(", ", Random);
-                MessageBox.Show($"Helaas, je hebt verloren! De juiste code was: {solution}", "Verloren", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-
-            ResetGame();
-        }
-
-        private void ResetGame()
-        {
-            attempts = 1; // Pogingen resetten
-            RandomKleur(); // Genereer een nieuwe code
-            UpdateTitle();
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.F12)
-            {
-                ToggleDebug();
-            }
+            // Titel bijwerken met huidige poging en geheime code
+            string secretCode = string.Join(", ", Random);
+            this.Title = $"Poging {attempts}/{maxAttempts} | Tijd: {countdownSeconds}s | Geheime Code: {secretCode}";
         }
     }
 }
