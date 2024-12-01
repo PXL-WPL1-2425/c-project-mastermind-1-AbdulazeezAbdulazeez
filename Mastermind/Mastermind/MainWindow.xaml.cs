@@ -130,15 +130,23 @@ namespace Mastermind
 
             StopCountdown(); // Timer stoppen na poging
 
-            if (attempts < maxAttempts)
+            if (score == 0 && guess1 == Random[0] && guess2 == Random[1] && guess3 == Random[2] && guess4 == Random[3])
             {
-                attempts++;
-                StartCountdown(); // Timer opnieuw starten
-                UpdateTitle(); // Titel bijwerken na de poging
+                // Als de code gekraakt is (score 0)
+                EndGame(true); // Winstbeëindiging
             }
             else
             {
-                EndGame(false); // Spel beëindigen als maximum pogingen is bereikt
+                attempts++;
+                if (attempts > maxAttempts)
+                {
+                    EndGame(false); // Spel beëindigen als maximum pogingen is bereikt
+                }
+                else
+                {
+                    StartCountdown(); // Timer opnieuw starten
+                    UpdateTitle(); // Titel bijwerken na de poging
+                }
             }
         }
 
@@ -218,16 +226,36 @@ namespace Mastermind
 
         private void EndGame(bool isWin)
         {
-            string message = isWin ? "Gefeliciteerd! Je hebt gewonnen!" : "Helaas, je hebt verloren.";
-            MessageBox.Show(message, "Einde Spel", MessageBoxButton.OK, MessageBoxImage.Information);
-            RandomKleur(); // Nieuwe code genereren voor een nieuw spel
+            string message = isWin ? "Gefeliciteerd! Je hebt de code gekraakt!" : $"Helaas, je hebt verloren wil je verder spelen?. De code was: {string.Join(", ", Random)}";
+            MessageBoxResult result = MessageBox.Show(message, "Einde Spel", MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // Nieuw spel starten
+                ResetGame();
+            }
+            else
+            {
+                // Applicatie sluiten
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void ResetGame()
+        {
+            // Reset alle waarden voor een nieuw spel
+            attempts = 1;
+            PreviousGuessesPanel.Children.Clear(); // Verwijder alle voorgaande pogingen
+            ScoreLabel.Content = "Score: 0"; // Zet de score terug naar 0
+            RandomKleur(); // Genereer een nieuwe geheime code
+            StartCountdown(); // Start de timer opnieuw
+            UpdateTitle(); // Werk de titel bij
         }
 
         private void UpdateTitle()
         {
-            // Titel bijwerken met huidige poging en geheime code
-            string secretCode = string.Join(", ", Random);
-            this.Title = $"Poging {attempts}/{maxAttempts} | Tijd: {countdownSeconds}s | Geheime Code: {secretCode}";
+            // Titel bijwerken met huidige poging
+            this.Title = $"Poging {attempts}/{maxAttempts} | Tijd: {countdownSeconds}s";
         }
     }
 }
