@@ -39,9 +39,10 @@ namespace Mastermind
                 Random.Add(kleuren[random.Next(kleuren.Count)]); // Genereer willekeurige kleuren
             }
 
-            DebugTextBox.Text = $"Geheime code: {string.Join(", ", Random)}";
+            // Zorg ervoor dat de geheime code in de titel staat aan het begin van het spel
+            UpdateTitleWithCode(); // De geheime code wordt getoond in de titel
+
             StartCountdown(); // Timer resetten bij het genereren van een nieuwe code
-            UpdateTitle(); // Titel bijwerken
         }
 
         private void ComboBoxes()
@@ -267,6 +268,12 @@ namespace Mastermind
         {
             // Titel bijwerken met huidige poging
             this.Title = $"Poging {attempts}/{maxAttempts} | Tijd: {countdownSeconds}s";
+        }
+
+        private void UpdateTitleWithCode()
+        {
+            // Zet de geheime code aan het begin van het spel in de titel
+            this.Title = $"Geheime Code: {string.Join(", ", Random)} | Poging {attempts}/{maxAttempts} | Tijd: {countdownSeconds}s";
         }
     }
 }
