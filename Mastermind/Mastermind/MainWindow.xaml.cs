@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -15,7 +14,6 @@ namespace Mastermind
         private List<string> Random = new List<string>();
         private int attempts = 1;
         private const int maxAttempts = 10; // Maximale aantal pogingen
-        private bool isDebugMode = false; // Debugmodus boolean
         private int countdownSeconds = 0; // Houdt de huidige timer-seconden bij
         private const int maxTime = 10; // Maximale tijd (10 seconden)
 
@@ -36,7 +34,7 @@ namespace Mastermind
 
             for (int i = 0; i < 4; i++)
             {
-                Random.Add(kleuren[random.Next(kleuren.Count)]);
+                Random.Add(kleuren[random.Next(kleuren.Count)]); // Genereer willekeurige kleuren
             }
 
             DebugTextBox.Text = $"Geheime code: {string.Join(", ", Random)}";
@@ -125,7 +123,10 @@ namespace Mastermind
             string guess3 = ComboBox3.SelectedItem?.ToString();
             string guess4 = ComboBox4.SelectedItem?.ToString();
 
-            CheckGuesses(guess1, guess2, guess3, guess4);
+            int score = CheckGuesses(guess1, guess2, guess3, guess4); // Score wordt nu correct berekend en teruggegeven
+
+            // Score weergeven in de UI
+            ScoreLabel.Content = $"Score: {score}";
 
             StopCountdown(); // Timer stoppen na poging
 
@@ -141,17 +142,51 @@ namespace Mastermind
             }
         }
 
-        private void CheckGuesses(string guess1, string guess2, string guess3, string guess4)
+        private int CheckGuesses(string guess1, string guess2, string guess3, string guess4)
         {
             List<string> guesses = new List<string> { guess1, guess2, guess3, guess4 };
 
-            // Voeg feedback toe in de form van een StackPanel van Border objecten
+            // Voeg feedback toe in de vorm van een StackPanel van Border objecten
             StackPanel feedbackPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal, // Horizontaal naast elkaar
                 Margin = new Thickness(5)
             };
 
+            int correctPositions = 0; // Aantal kleuren op de juiste positie
+            int correctColors = 0;    // Aantal kleuren die correct zijn, maar niet op de juiste positie
+            int wrongColors = 0;      // Aantal kleuren die niet in de geheime code zitten
+
+            // Maak een kopie van de geheime code om deze te vergelijken
+            List<string> secretCode = new List<string>(Random);
+
+            // Eerste stap: check de kleuren op de juiste positie
+            for (int i = 0; i < guesses.Count; i++)
+            {
+                if (guesses[i] == secretCode[i])
+                {
+                    correctPositions++;
+                    secretCode[i] = null; // Verwijder de correcte kleur uit de geheime code
+                }
+            }
+
+            // Tweede stap: check of de kleur ergens anders in de geheime code voorkomt (maar op de verkeerde positie)
+            for (int i = 0; i < guesses.Count; i++)
+            {
+                if (guesses[i] != null && secretCode.Contains(guesses[i]))
+                {
+                    correctColors++;
+                    secretCode[secretCode.IndexOf(guesses[i])] = null; // Verwijder de kleur uit de geheime code
+                }
+            }
+
+            // Aantal kleuren die niet in de geheime code voorkomen
+            wrongColors = guesses.Count - (correctPositions + correctColors);
+
+            // Bereken de score
+            int score = (wrongColors * 2) + (correctColors * 1); // 2 strafpunten voor foute kleuren, 1 voor juiste kleur op verkeerde plaats
+
+            // Voeg de feedback toe aan de StackPanel
             for (int i = 0; i < guesses.Count; i++)
             {
                 Border feedbackBorder = new Border
@@ -177,6 +212,8 @@ namespace Mastermind
             }
 
             PreviousGuessesPanel.Children.Add(feedbackPanel); // Voeg de feedback toe aan het StackPanel
+
+            return score; // Geef de berekende score terug
         }
 
         private void EndGame(bool isWin)
