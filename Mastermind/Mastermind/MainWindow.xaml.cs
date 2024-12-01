@@ -25,6 +25,8 @@ namespace Mastermind
             timer.Tick += Timer_Tick;
             timer.Interval = new TimeSpan(0, 0, 1);
             StartCountdown(); // Timer starten bij het genereren van de eerste code
+
+            this.Closing += MainWindow_Closing; // Voeg het Closing event toe
         }
 
         private void RandomKleur()
@@ -226,7 +228,7 @@ namespace Mastermind
 
         private void EndGame(bool isWin)
         {
-            string message = isWin ? "Gefeliciteerd! Je hebt de code gekraakt!" : $"Helaas, je hebt verloren wil je verder spelen?. De code was: {string.Join(", ", Random)}";
+            string message = isWin ? "Gefeliciteerd! Je hebt de code gekraakt!" : $"Helaas, je hebt verloren. De code was: {string.Join(", ", Random)}";
             MessageBoxResult result = MessageBox.Show(message, "Einde Spel", MessageBoxButton.YesNo, MessageBoxImage.Information);
 
             if (result == MessageBoxResult.Yes)
@@ -243,13 +245,22 @@ namespace Mastermind
 
         private void ResetGame()
         {
-            // Reset alle waarden voor een nieuw spel
+            // Reset alle waarden en begin opnieuw
+            RandomKleur();
             attempts = 1;
-            PreviousGuessesPanel.Children.Clear(); // Verwijder alle voorgaande pogingen
-            ScoreLabel.Content = "Score: 0"; // Zet de score terug naar 0
-            RandomKleur(); // Genereer een nieuwe geheime code
-            StartCountdown(); // Start de timer opnieuw
-            UpdateTitle(); // Werk de titel bij
+            PreviousGuessesPanel.Children.Clear(); // Verwijder alle vorige pogingen
+            UpdateTitle(); // Titel bijwerken
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Vraag de speler of ze willen afsluiten
+            MessageBoxResult result = MessageBox.Show("Weet je zeker dat je het spel wilt afsluiten?", "Bevestig afsluiten", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.No)
+            {
+                e.Cancel = true; // Annuleer het sluiten van het venster
+            }
         }
 
         private void UpdateTitle()
